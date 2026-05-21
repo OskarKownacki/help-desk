@@ -20,7 +20,7 @@ export async function PUT(
     { params }: { params: Promise<{ id: string }> },
 ) {
     const { id } = await params;
-    const { title, content, author, urgency } = await request.json();
+    const { title, content, author, urgency, status } = await request.json();
 
     const data = {
         ...(title !== undefined && { title }),

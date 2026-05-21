@@ -2,11 +2,12 @@
 
 import LoginButton from "../components/LoginButton";
 import RegisterButton from "../components/RegisterButton";
-import { useUser } from "@auth0/nextjs-auth0";
+import { useUser } from "@/hooks/useUser";
+
 
 export default function Home() {
-  const { user } = useUser();
 
+  const { user } = useUser();
   return (
     <main className="min-h-screen bg-linear-to-b from-[#03040a] to-[#071026] text-white">
       <section className="max-w-6xl mx-auto px-6 py-20">
