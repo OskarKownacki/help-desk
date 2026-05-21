@@ -1,19 +1,33 @@
 {
-  "name": "help-desk",
-  "version": "0.1.0",
-  "type": "module",
-  "private": true,
+  "main": ".electron/main.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "electron:compile": "tsc --project electron/tsconfig.json",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && NODE_ENV=development electron .\"",
+    "electron:build": "npm run electron:compile && next build && electron-builder",
+    "electron:preview": "npm run electron:compile && next build && electron ."
+  },
+  "build": {
+    "appId": "com.yourapp.id",
+    "productName": "Your App Name",
+    "files": [
+      ".electron/**/*",
+      "out/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "mac": { "target": "dmg" },
+    "win": { "target": "nsis" },
+    "linux": { "target": "AppImage" }
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^4.20.0",
     "@prisma/adapter-mariadb": "^7.8.0",
-    "@prisma/client": "^7.8.0",
+    "@prisma/client": "6.19",
     "dotenv": "^17.4.2",
+    "mongoose": "^9.6.2",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4"
@@ -23,10 +37,15 @@
     "@types/node": "^20.19.41",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.2.1",
+    "electron": "^42.2.0",
+    "electron-builder": "^26.8.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
-    "prisma": "^7.8.0",
+    "prisma": "6.19",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "wait-on": "^9.0.10"
   }
 }

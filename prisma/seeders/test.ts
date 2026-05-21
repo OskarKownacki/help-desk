@@ -1,4 +1,5 @@
-import {prisma} from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
+import { prisma as mongodb } from "@/lib/mongodb";
 
 async function main() {
   await prisma.komputer.create({
@@ -9,13 +10,21 @@ async function main() {
     },
   });
   console.log("Stworzono testowy komputer.");
-
+  await mongodb.ticket.create({
+    data: {
+      title: "Testowy ticket",
+      content: "To jest testowy ticket.",
+      author: "Jane Doe",
+    },
+  });
+  console.log("Stworzono testowy ticket.");
 }
-main().then(async () => {
-  await prisma.$disconnect();
-} ).catch(async (e) => {
+main()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (e) => {
     console.error(e);
     await prisma.$disconnect();
     process.exit(1);
-  }
-);
+  });
