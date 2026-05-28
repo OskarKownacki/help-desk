@@ -5,6 +5,8 @@ interface User {
   email?: string;
   picture?: string;
   sub?: string;
+  // Explicitly typing this keeps your autocomplete clean in components!
+  'https://helpdesk.com/roles'?: string[]; 
   [key: string]: unknown;
 }
 

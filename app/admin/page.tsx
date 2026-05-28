@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@/hooks/useUser";
 import { resolveTicket, deleteTicket, updateTicket } from "../../lib/tickets";
+import InviteLinkGenerator from "@/components/InviteLinkGenerator";
 
 type Ticket = {
   _id: string;
@@ -174,6 +175,8 @@ export default function AdminPage() {
               </table>
             </div>
           )}
+
+          <InviteLinkGenerator />
         </div>
       </div>
     </main>

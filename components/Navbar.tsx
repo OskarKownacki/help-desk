@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useUser } from "@auth0/nextjs-auth0";
+import { useUser } from "@/hooks/useUser";
 import LoginButton from "./LoginButton";
 import RegisterButton from "./RegisterButton";
 
@@ -17,7 +17,8 @@ function getInitials(name?: string | null, email?: string | null): string {
 }
 
 export default function Navbar() {
-  const { user, isLoading } = useUser();
+  const { user, loading } = useUser();
+  const roles = user?.['https://helpdesk.com/roles'] || [];
 
   return (
     <nav className="w-full h-16 border-b border-zinc-800 bg-transparent">
@@ -30,14 +31,19 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-3">
-          {!isLoading && !user && (
+          {!loading && !user && (
             <div className="flex items-center gap-3">
               <LoginButton />
               <RegisterButton />
             </div>
           )}
 
-          {!isLoading && user && (
+          {!loading && user && roles.includes('Admin') && (
+            <Link href="/admin" className="text-sm px-3 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white">
+              Admin Panel
+            </Link>
+          )}
+          {!loading && user && (
             <div className="flex items-center gap-3">
               <Link href="/profile" className="flex items-center gap-2 text-sm text-white">
                 <span className="w-8 h-8 rounded-full bg-zinc-900 flex items-center justify-center text-xs font-semibold">

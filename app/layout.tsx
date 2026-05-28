@@ -1,8 +1,9 @@
+// app/layout.tsx
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import { Auth0Provider } from "@auth0/nextjs-auth0/client";
 import "./globals.css";
-import Navbar from "../components/Navbar";
+import Navbar from "@/components/Navbar";
 
 const inter = Inter({
   subsets: ["latin"],
