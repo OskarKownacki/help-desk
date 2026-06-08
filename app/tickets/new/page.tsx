@@ -6,11 +6,10 @@ import { useRouter } from 'next/navigation'
 export default function NewTicketPage() {
 	const router = useRouter()
 
-	// Stany dla pól formularza
 	const [title, setTitle] = useState('')
 	const [content, setContent] = useState('')
-	const [author, setAuthor] = useState('') // Pobierane z inputu, dopóki Auth0 nie uzupełni profilu
-	const [urgency, setUrgency] = useState(1) // Domyślnie: 1 (Niski)
+	const [author, setAuthor] = useState('')
+	const [urgency, setUrgency] = useState(1)
 
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
@@ -22,15 +21,13 @@ export default function NewTicketPage() {
 		setError(null)
 		setSuccess(false)
 
-		// Walidacja po stronie frontendu
 		if (!title || !content || !author) {
-			setError('Wszystkie pola są wymagane.')
+			setError('All fields are required.')
 			setLoading(false)
 			return
 		}
 
 		try {
-			// Strzał do Waszego API (app/api/tickets/route.ts) -> metoda POST
 			const res = await fetch('/api/tickets', {
 				method: 'POST',
 				headers: {
@@ -47,15 +44,13 @@ export default function NewTicketPage() {
 			const data = await res.json()
 
 			if (!res.ok) {
-				throw new Error(data.error || 'Coś poszło nie tak podczas wysyłania ticketu.')
+				throw new Error(data.error || 'Something went wrong while submitting the ticket.')
 			}
 
-			// Jeśli się udało:
 			setSuccess(true)
 			setTitle('')
 			setContent('')
 
-			// Po 2 sekundach przekieruj użytkownika (np. na stronę główną)
 			setTimeout(() => {
 				router.push('/')
 			}, 2000)
@@ -70,77 +65,77 @@ export default function NewTicketPage() {
 		<main className='min-h-screen flex items-center justify-center bg-[#071026] text-white p-4'>
 			<div className='w-full max-w-md bg-zinc-900/50 border border-zinc-800 rounded-xl p-6 shadow-2xl backdrop-blur-md'>
 				<h1 className='text-2xl font-bold bg-gradient-to-r from-sky-400 to-blue-500 bg-clip-text text-transparent'>
-					Utwórz nowe zgłoszenie
+					Create a New Ticket
 				</h1>
+
 				<p className='text-zinc-400 text-sm mt-1'>
-					Opisz swój problem, a nasz zespół zajmie się nim najszybciej jak to możliwe.
+					Describe your issue and our team will address it as quickly as possible.
 				</p>
 
 				<form onSubmit={handleSubmit} className='mt-6 flex flex-col gap-4'>
-					{/* Komunikaty o błędzie / sukcesie */}
 					{error && (
 						<div className='p-3 bg-red-600/20 border border-red-500/50 text-red-200 text-sm rounded-lg'>{error}</div>
 					)}
+
 					{success && (
 						<div className='p-3 bg-green-600/20 border border-green-500/50 text-green-200 text-sm rounded-lg'>
-							Pomyślnie utworzono zgłoszenie! Przekierowywanie...
+							Ticket created successfully! Redirecting...
 						</div>
 					)}
 
-					{/* Pole: Autor */}
 					<div className='flex flex-col gap-1'>
-						<label className='text-xs font-semibold text-zinc-300 uppercase tracking-wider'>Twoje Imię / Email</label>
+						<label className='text-xs font-semibold text-zinc-300 uppercase tracking-wider'>Your Name / Email</label>
+
 						<input
 							type='text'
 							className='bg-zinc-800/80 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500 transition-colors'
-							placeholder='np. Jan Kowalski'
+							placeholder='e.g. John Smith'
 							value={author}
 							onChange={e => setAuthor(e.target.value)}
 							disabled={loading || success}
 						/>
 					</div>
 
-					{/* Pole: Tytuł */}
 					<div className='flex flex-col gap-1'>
-						<label className='text-xs font-semibold text-zinc-300 uppercase tracking-wider'>Temat zgłoszenia</label>
+						<label className='text-xs font-semibold text-zinc-300 uppercase tracking-wider'>Ticket Subject</label>
+
 						<input
 							type='text'
 							className='bg-zinc-800/80 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500 transition-colors'
-							placeholder='Krótki tytuł problemu'
+							placeholder='Brief issue title'
 							value={title}
 							onChange={e => setTitle(e.target.value)}
 							disabled={loading || success}
 						/>
 					</div>
 
-					{/* Pole: Priorytet (Urgency) */}
 					<div className='flex flex-col gap-1'>
-						<label className='text-xs font-semibold text-zinc-300 uppercase tracking-wider'>Priorytet</label>
+						<label className='text-xs font-semibold text-zinc-300 uppercase tracking-wider'>Priority</label>
+
 						<select
 							className='bg-zinc-800/80 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500 transition-colors cursor-pointer'
 							value={urgency}
 							onChange={e => setUrgency(Number(e.target.value))}
 							disabled={loading || success}>
-							<option value={1}>Niski (Low)</option>
-							<option value={2}>Średni (Medium)</option>
-							<option value={3}>Wysoki (High)</option>
+							<option value={1}>Low</option>
+							<option value={2}>Medium</option>
+							<option value={3}>High</option>
 						</select>
 					</div>
 
-					{/* Pole: Opis (Content) */}
 					<div className='flex flex-col gap-1'>
-						<label className='text-xs font-semibold text-zinc-300 uppercase tracking-wider'>Opis problemu</label>
+						<label className='text-xs font-semibold text-zinc-300 uppercase tracking-wider'>Issue Description</label>
+
 						<textarea
 							className='bg-zinc-800/80 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500 transition-colors resize-none'
 							rows={4}
-							placeholder='Opisz dokładnie, co nie działa...'
+							placeholder='Please describe in detail what is not working...'
 							value={content}
 							onChange={e => setContent(e.target.value)}
 							disabled={loading || success}
 						/>
 					</div>
 
-					{/* Przycisk wysyłania */}
 					<button
 						type='submit'
 						disabled={loading || success}
@@ -148,7 +143,7 @@ export default function NewTicketPage() {
 						{loading ? (
 							<div className='animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full' />
 						) : (
-							'Wyślij zgłoszenie'
+							'Submit Ticket'
 						)}
 					</button>
 				</form>
