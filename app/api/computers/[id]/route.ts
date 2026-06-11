@@ -6,17 +6,25 @@ export async function PUT(
   { params }: { params: { id: number } },
 ) {
   const { id } = await params;
-  const { name, room, owner } = await request.json();
+  const { name, roomId, owner } = await request.json();
   if (!name) {
     return NextResponse.json({ error: "Name is required" }, { status: 400 });
+  }
+
+  const parsedRoomId = Number(roomId);
+  if (!Number.isInteger(parsedRoomId) || parsedRoomId <= 0) {
+    return NextResponse.json({ error: "Room is required" }, { status: 400 });
   }
 
   const updated = await prisma.komputer.update({
     where: { id: Number(id) },
     data: {
       name,
-      ...(room !== undefined && { room }),
+      roomId: parsedRoomId,
       ...(owner !== undefined && { owner }),
+    },
+    include: {
+      room: true,
     },
   });
 
@@ -30,6 +38,9 @@ export async function GET(
   const { id } = await params;
   const komputer = await prisma.komputer.findUnique({
     where: { id: Number(id) },
+    include: {
+      room: true,
+    },
   });
 
   if (!komputer) {

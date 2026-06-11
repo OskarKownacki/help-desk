@@ -14,7 +14,17 @@ datasource db {
 
 model komputer { 
   id        Int     @id @default(autoincrement()) 
-  name     String
-  room   String? @db.Text
-  owner String? @default("") 
+  name      String
+  roomId    Int?
+  room      pokoj? @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  owner     String? @default("") 
+
+  @@index([roomId])
 } 
+
+model pokoj { 
+  id        Int     @id @default(autoincrement()) 
+  name      String
+  floor     Int? 
+  computers komputer[]
+}
